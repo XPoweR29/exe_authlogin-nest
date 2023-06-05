@@ -11,7 +11,7 @@ export class UserController {
     ) {};
 
     @Post('/register')
-    registerNewUser(@Body() newUser: RegisterUserDto): Promise<UserEntity> {
+    registerNewUser(@Body() newUser: RegisterUserDto): Promise<Partial<UserEntity>> {
         return this.userService.registerNewUser(newUser);
     }
 

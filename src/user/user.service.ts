@@ -13,6 +13,12 @@ export class UserService {
     constructor(
         private dataSource: DataSource,
     ){}
+    
+    private filter(user: UserEntity): Partial<UserEntity> {
+        const {id, username, email} = user;
+        return {id, username, email};
+    }
+
 
     async registerNewUser(data: RegisterUserDto) {
         const newUser = new UserEntity();
@@ -20,7 +26,7 @@ export class UserService {
         newUser.email = data.email;
         newUser.pwd = await hashing(data.pwd, 10);
 
-        return await newUser.save();
+        return this.filter(await newUser.save())
     }
 
     async getUserByEmail(email: string): Promise<UserEntity> {

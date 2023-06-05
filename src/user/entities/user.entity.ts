@@ -24,5 +24,10 @@ export class UserEntity extends BaseEntity {
     length: 256,
     nullable: true,
   })
-  refreshToken: string;
+
+  @Column({
+    nullable: true,
+    default: null,
+  })
+  refreshToken: string | null;
 }
