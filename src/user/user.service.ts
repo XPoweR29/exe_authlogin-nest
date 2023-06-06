@@ -86,12 +86,14 @@ export class UserService {
         await UserEntity.delete(id);
     }
 
-    showWelcome(res: Response) {
+    showWelcome(res: Response, user: UserEntity) {
         res.send(
-            `
-            <h1>Witaj</h1>
+          `
+            <h1>Witaj ${user.username}</h1>
             <p>Ta treść jest widoczna tylko dla zalogowanych uzytkowników. <strong>GRATUALCJE!</strong></p>
-            `
+            </hr>
+            <p>Twoje ID to: <strong>${user.id}</strong></p>
+            `,
         );
     }
 }

@@ -60,7 +60,10 @@ export class AuthService {
                     domain: 'localhost', 
                     httpOnly: true, 
                 })
-                .json({isSuccess: true});
+                .json({
+                    isSuccess: true,
+                    message: 'You are successfully logged in'
+                });
 
         } catch(err: any){
 
@@ -68,6 +71,29 @@ export class AuthService {
                 isSuccess: false, 
                 error: err.message,
             });
+        }
+    }
+
+    async logout(user: UserEntity, res: Response) {
+        try {
+            user.currentTokenId = null;
+            await user.save();
+
+            res.clearCookie('jwt', {
+                secure: false,
+                domain: 'localhost',
+                httpOnly: true, 
+            });
+
+            return res.json({
+                isSuccess: true,
+                message: `You are successfully logged out`,
+            });
+        } catch(err) {
+            return res.status(400).json({
+                isSuccess: false,
+                error: err.message,
+            });   
         }
     }
 

@@ -19,7 +19,7 @@ export class UserController {
         @UserObj() user: UserEntity,
         ) {
         console.log(user);
-        return this.userService.showWelcome(res);
+        return this.userService.showWelcome(res, user);
     }
 
     @Post('/register')
