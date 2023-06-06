@@ -29,5 +29,5 @@ export class UserEntity extends BaseEntity {
     nullable: true,
     default: null,
   })
-  refreshToken: string | null;
+  currentTokenId: string | null;
 }
