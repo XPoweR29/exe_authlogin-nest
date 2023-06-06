@@ -4,6 +4,7 @@ import { RegisterUserDto } from './dto/registerUser.dto';
 import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
 import {AuthGuard} from '@nestjs/passport';
+import { UserObj } from 'src/decorators/user-obj.decorator';
 
 @Controller('/user')
 export class UserController {
@@ -13,7 +14,11 @@ export class UserController {
 
     @Get('/welcome') 
     @UseGuards(AuthGuard('jwt'))
-    shoWelcome(@Res() res: Response) {
+    shoWelcome(
+        @Res() res: Response,
+        @UserObj() user: UserEntity,
+        ) {
+        console.log(user);
         return this.userService.showWelcome(res);
     }
 
