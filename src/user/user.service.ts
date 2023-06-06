@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, HttpException, HttpStatus} from '@nestjs/common';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { UserEntity } from './entities/user.entity';
 import { promisify } from 'util';
 import { hash } from 'bcrypt';
 import { DataSource } from 'typeorm';
+import { Response } from 'express';
 
 const hashing = promisify(hash);
 
@@ -19,13 +20,28 @@ export class UserService {
         return {id, username, email};
     }
 
+    private async checkIfUserExists(userData: RegisterUserDto): Promise<boolean> {
+        const existingUser: UserEntity | null = await UserEntity.findOne({where: [
+            {username: userData.username},
+            {email: userData.email},
+        ]});
+
+        return !!existingUser;
+    }
+
 
     async registerNewUser(data: RegisterUserDto) {
+
+        const existingUser = await this.checkIfUserExists(data);
+        if(existingUser){
+            throw new HttpException('User with given username or email already exists', HttpStatus.CONFLICT);
+        }
+    
         const newUser = new UserEntity();
         newUser.username = data.username;
         newUser.email = data.email;
         newUser.pwd = await hashing(data.pwd, 10);
-
+    
         return this.filter(await newUser.save())
     }
 
@@ -68,5 +84,14 @@ export class UserService {
 
     async deleteUser(id: string) {
         await UserEntity.delete(id);
+    }
+
+    showWelcome(res: Response) {
+        res.send(
+            `
+            <h1>Witaj</h1>
+            <p>Ta treść jest widoczna tylko dla zalogowanych uzytkowników. <strong>GRATUALCJE!</strong></p>
+            `
+        );
     }
 }
