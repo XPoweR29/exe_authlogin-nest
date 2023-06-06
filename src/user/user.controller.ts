@@ -1,14 +1,21 @@
-import {Param, Get,  Body, Controller, Inject, Post, Delete, Res } from '@nestjs/common';
+import {Param, Get,  Body, Controller, Inject, Post, Delete, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
+import {AuthGuard} from '@nestjs/passport';
 
 @Controller('/user')
 export class UserController {
     constructor(
         @Inject(UserService) private userService: UserService,
     ) {};
+
+    @Get('/welcome') 
+    @UseGuards(AuthGuard('jwt'))
+    shoWelcome(@Res() res: Response) {
+        return this.userService.showWelcome(res);
+    }
 
     @Post('/register')
     registerNewUser(@Body() newUser: RegisterUserDto): Promise<Partial<UserEntity>> {
