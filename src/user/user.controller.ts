@@ -1,10 +1,13 @@
-import {Param, Get,  Body, Controller, Inject, Post, Delete, Res, UseGuards } from '@nestjs/common';
+import {Param, Get,  Body, Controller, Inject, Post, Delete, Res, UseGuards, SetMetadata } from '@nestjs/common';
 import { Response } from 'express';
 import { RegisterUserDto } from './dto/registerUser.dto';
 import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
 import {AuthGuard} from '@nestjs/passport';
 import { UserObj } from 'src/decorators/user-obj.decorator';
+import { RoleAccess } from 'src/guards/role-access.guard';
+import { UserRole } from 'src/types/user-role';
+import { SetRequiredRole } from 'src/decorators/set-required-role.decorator';
 
 @Controller('/user')
 export class UserController {
@@ -20,6 +23,17 @@ export class UserController {
         ) {
         console.log(user);
         return this.userService.showWelcome(res, user);
+    }
+
+
+    @Get('/admin') 
+    @UseGuards(AuthGuard('jwt'), RoleAccess)
+    @SetRequiredRole(UserRole.Admin)
+    showAdminDashboard(
+        @Res() res: Response,
+        @UserObj() user: UserEntity,
+        ) {
+        return this.userService.showAdminDashboard(res, user);
     }
 
     @Post('/register')
