@@ -30,4 +30,10 @@ export class UserEntity extends BaseEntity {
     default: null,
   })
   currentTokenId: string | null;
+
+  @Column({
+    length: 10, 
+    default: 'user'
+  })
+  userRole: string;
 }

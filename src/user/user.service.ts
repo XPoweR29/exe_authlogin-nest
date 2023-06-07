@@ -4,7 +4,7 @@ import { UserEntity } from './entities/user.entity';
 import { promisify } from 'util';
 import { hash } from 'bcrypt';
 import { DataSource } from 'typeorm';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 const hashing = promisify(hash);
 
@@ -95,5 +95,20 @@ export class UserService {
             <p>Twoje ID to: <strong>${user.id}</strong></p>
             `,
         );
+    }
+
+    showAdminDashboard(res: Response, user: UserEntity) {
+        res.send(
+          `
+            <h1>Witaj ${user.username}</h1>
+            <p>
+            Jesteś w panelu <strong style="color: red">ADMINISTRATORA</strong>. Teraz możesz wszystkimi rządzić 🔥😈
+            </p>
+
+            </hr>
+            <p>Twoje ID to: <strong>${user.id}</strong></p>
+            `,
+        );
+
     }
 }
