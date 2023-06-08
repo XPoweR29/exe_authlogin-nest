@@ -16,8 +16,8 @@ export class UserService {
     ){}
     
     private filter(user: UserEntity): Partial<UserEntity> {
-        const {id, username, email} = user;
-        return {id, username, email};
+        const {id, username, email, userRole} = user;
+        return {id, username, email, userRole};
     }
 
     private async checkIfUserExists(userData: RegisterUserDto): Promise<boolean> {
@@ -87,28 +87,15 @@ export class UserService {
     }
 
     showWelcome(res: Response, user: UserEntity) {
-        res.send(
-          `
-            <h1>Witaj ${user.username}</h1>
-            <p>Ta treść jest widoczna tylko dla zalogowanych uzytkowników. <strong>GRATUALCJE!</strong></p>
-            </hr>
-            <p>Twoje ID to: <strong>${user.id}</strong></p>
-            `,
-        );
+
+       res.json({
+        isSuccess: true,
+        user: this.filter(user),
+       });
     }
 
-    showAdminDashboard(res: Response, user: UserEntity) {
-        res.send(
-          `
-            <h1>Witaj ${user.username}</h1>
-            <p>
-            Jesteś w panelu <strong style="color: red">ADMINISTRATORA</strong>. Teraz możesz wszystkimi rządzić 🔥😈
-            </p>
-
-            </hr>
-            <p>Twoje ID to: <strong>${user.id}</strong></p>
-            `,
-        );
-
+async getUsersList(): Promise<UserEntity[]> {
+        const usersList = await UserEntity.find();
+        return usersList; 
     }
 }
