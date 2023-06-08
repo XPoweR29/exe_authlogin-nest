@@ -13,7 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       bigNumberStrings: false,
       entities: [],
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
       logging: true,
     }),
   ],
